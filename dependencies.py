@@ -1,5 +1,9 @@
+from utils.db_connection import AsyncMainSession
 
 
-def get_async_session():
-    raise NotImplementedError
-    return None
+async def get_async_session():
+    async_session = AsyncMainSession()
+    try:
+        yield async_session
+    finally:
+        await async_session.close()

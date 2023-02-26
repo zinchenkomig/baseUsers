@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
-from routers.auth import auth_router
+from authentication.router import auth_router
+from authentication.dependencies import get_current_user
 
 app = FastAPI()
 
@@ -17,3 +18,8 @@ app.include_router(router=auth_router,
                    prefix='/auth',
                    tags=['auth']
                    )
+
+
+@app.get('/email')
+async def get_email(user=Depends(get_current_user)):
+    return user.email
