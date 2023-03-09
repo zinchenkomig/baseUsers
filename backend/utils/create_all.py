@@ -1,6 +1,6 @@
-from db_models import Base
+from backend.db_models import Base
 import asyncio
-from utils.db_connection import async_engine
+from backend.utils.db_connection import async_engine
 
 
 async def create_scheme():

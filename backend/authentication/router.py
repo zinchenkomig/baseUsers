@@ -5,11 +5,11 @@ from fastapi import APIRouter, Response, Depends, HTTPException, status
 # Used here just for swagger integrated login
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
-from db_models import User
-from dependencies import get_async_session
-from json_schemes import UserCreate
+from backend.db_models import User
+from backend.dependencies import get_async_session
+from backend.json_schemes import UserCreate
 
-from .crud import get_user
+from .crud import get_user, check_is_user_exists
 from .security import verify_password, get_password_hash, create_access_token
 from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -43,8 +43,8 @@ async def login_for_access_token(response: Response,
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
-                        httponly=True, samesite='lax',
-                        secure=True)
+                        samesite='none', secure=True, httponly=False
+                        )
 
     return None
 
@@ -70,12 +70,15 @@ async def register(user_create: UserCreate, response: Response,
     :param async_session:
     :return:
     """
-    hashed_pass = get_password_hash(user_create.password)
-    user = User(username=user_create.username,
-                email=user_create.email,
-                password=hashed_pass,
-                is_active=True)
-    async_session.add(user)
-    await async_session.commit()
-    response.status_code = status.HTTP_201_CREATED
+    if await check_is_user_exists(async_session, user_create):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+    else:
+        hashed_pass = get_password_hash(user_create.password)
+        user = User(username=user_create.username,
+                    email=user_create.email,
+                    password=hashed_pass,
+                    is_active=True)
+        async_session.add(user)
+        await async_session.commit()
+        response.status_code = status.HTTP_201_CREATED
 
