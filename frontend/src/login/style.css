@@ -1,0 +1,11 @@
+h3{
+    margin-bottom: 1.2rem;
+}
+
+form input{
+    margin-bottom: 10px;
+}
+
+.warning{
+    color: #cc3300;
+}
