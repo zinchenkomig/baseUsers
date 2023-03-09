@@ -12,3 +12,9 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
+
+class UserRead(BaseORM):
+    username: str
+    email: str
+
+
