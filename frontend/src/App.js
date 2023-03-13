@@ -2,7 +2,10 @@ import {createBrowserRouter, Link, Outlet, RouterProvider} from "react-router-do
 import ErrorPage from "./error_page";
 import Login from "./login/login";
 import SignUp from "./signup/signup";
-import useAuth from "./hooks/auth";
+import AuthContext from "./context/auth";
+import {useContext, useEffect} from "react";
+import RequireAuth from "./components/RequireAuth";
+import axios from "./api/backend";
 
 
 const router = createBrowserRouter([
@@ -12,12 +15,13 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage/>,
         children: [
             {
-                path: "products",
-                element: <ProductsContent/>,
-            },
-            {
-                path: "profile",
-                element: <Profile/>,
+                element: <RequireAuth/>,
+                children: [
+                    {
+                        path: "profile",
+                        element: <Profile/>,
+                    },
+                ]
             },
             {
                 path: "login",
@@ -40,8 +44,21 @@ const router = createBrowserRouter([
 
 
 export default function App(){
+
+    const { userInfo, setUserInfo } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!userInfo.username){
+            console.log('Getting this shit');
+            console.log(localStorage.getItem('username'));
+            setUserInfo({username: localStorage.getItem('username')});
+        } else{
+            console.log(userInfo);
+        }
+    }, [])
+
     return (
-        <RouterProvider router={router}/>
+            <RouterProvider router={router}/>
     )
 }
 
@@ -71,20 +88,21 @@ function Root() {
   );
 }
 
-function ProductsContent(){
-    return (
-        <div className="container text-center">
-        </div>
-    )
-}
 
 
 function Profile(){
-    const userInfo = useAuth();
+    const {userInfo, setUserInfo} = useContext(AuthContext);
+
+    async function onLogoutClick(){
+        await axios.post('/auth/logout');
+        localStorage.removeItem('username');
+        setUserInfo({});
+    }
 
     return(
         <div>
             Profile info: {userInfo?.username}
+            <button onClick={onLogoutClick}>Logout</button>
         </div>
     )
 }

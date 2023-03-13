@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from backend.db_models import User
 from backend.dependencies import get_async_session
-from backend.json_schemes import UserCreate
+from backend.json_schemes import UserCreate, UserRead
 
 from .crud import get_user, check_is_user_exists
 from .security import verify_password, get_password_hash, create_access_token
@@ -27,7 +27,7 @@ async def authenticate_user(async_session, username: str, password: str) -> Unio
     return user
 
 
-@auth_router.post("/token")
+@auth_router.post("/token", response_model=UserRead)
 async def login_for_access_token(response: Response,
                                  async_session=Depends(get_async_session),
                                  form_data: OAuth2PasswordRequestForm = Depends()):
@@ -46,7 +46,7 @@ async def login_for_access_token(response: Response,
                         samesite='none', secure=True, httponly=False
                         )
 
-    return None
+    return user
 
 
 @auth_router.post('/logout')

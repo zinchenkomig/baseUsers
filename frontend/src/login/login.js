@@ -3,24 +3,33 @@ import axios from "../api/backend";
 import { useForm } from "react-hook-form";
 import {Link} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/auth";
+import {useContext} from "react";
+import {flushSync} from "react-dom";
 
 
 export default function Login(){
     const { register, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
     const navigate = useNavigate();
+    const { setUserInfo } = useContext(AuthContext);
 
-    async function onSubmit(data) {
-        let dataForm = new FormData()
-        dataForm.append('username', data['username'])
-        dataForm.append('password', data['password'])
-
-        const response = await axios.post('/auth/token', dataForm)
+    const onSubmit = async (data) => {
+        let dataForm = new FormData();
+        dataForm.append('username', data['username']);
+        dataForm.append('password', data['password']);
+        await axios.post('/auth/token', dataForm)
             .then((response) => {
-                return response;
+                console.log(response);
+                if (response.status === 200) {
+                    localStorage.setItem('username', response.data.username);
+                    console.log('Localstorage check: ', localStorage.getItem('username'));
+                    flushSync(() => {
+                        setUserInfo({username: response.data.username})
+                    });
+                    console.log('Redirect from login');
+                    navigate('/profile');
+                }
             }).catch((error)=>{console.log(error)});
-        if (response.status === 200) {
-            navigate('/profile');
-        }
     }
 
 
