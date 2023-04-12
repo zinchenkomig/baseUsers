@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 
 
 export default function SignUp(){
-    const { register, watch, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
-
+    const { register, watch, handleSubmit, setError, formState: { errors } } = useForm({mode: "onBlur"});
 
     async function validate_username(username){
         const is_exists = await axios.get('/check/username', {params: {username: username}})
@@ -16,7 +15,6 @@ export default function SignUp(){
         return !is_exists || `Username ${username} already exists`
     }
 
-
     function onSubmit(data) {
         axios.post('/auth/register', data)
             .then(function (response) {
@@ -24,11 +22,10 @@ export default function SignUp(){
             })
             .catch(function (error) {
                 if (error.response.status===409){
-
+                    setError("username", {type: "focus", message: "Username already exists"})
                 }
             });
     }
-
 
     return (
         <div className="row justify-content-center">

@@ -9,7 +9,7 @@ import {flushSync} from "react-dom";
 
 
 export default function Login(){
-    const { register, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
+    const { register, handleSubmit, setError, formState: { errors } } = useForm({mode: "onBlur"});
     const navigate = useNavigate();
     const { setUserInfo } = useContext(AuthContext);
 
@@ -26,10 +26,18 @@ export default function Login(){
                     flushSync(() => {
                         setUserInfo({username: response.data.username})
                     });
-                    console.log('Redirect from login');
                     navigate('/profile');
                 }
-            }).catch((error)=>{console.log(error)});
+            }).catch((error)=>{
+                if (error.response.status === 401){
+                    setError("password", {type: "focus", message: "Invalid credentials"})
+                }
+                if (error.response.status === 500){
+                    setError("password", {type: "custom", message: "Server is not responding. " +
+                            "Try again later"})
+                }
+            }
+            );
     }
 
 
