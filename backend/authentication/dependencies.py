@@ -1,9 +1,10 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
-from backend.dependencies import get_async_session
 from jose import jwt, JWTError
-from backend.conf.secrets import PASSWORD_ENCODING_SECRET
+
 from backend.conf.consts import ALGORITHM
+from backend.conf.secrets import PASSWORD_ENCODING_SECRET
+from backend.dependencies import get_async_session
 from .crud import get_user
 
 apikey_cookie_getter = APIKeyCookie(name='login_token')

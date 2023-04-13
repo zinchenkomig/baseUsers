@@ -1,4 +1,8 @@
+import os
 
+IS_PROD = bool(int(os.getenv('IS_BASE_USER_PROD', '0')))
 
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+IS_SECURE_COOKIE = IS_PROD

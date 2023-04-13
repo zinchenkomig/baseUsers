@@ -11,7 +11,7 @@ from backend.json_schemes import UserCreate, UserRead
 
 from .crud import get_user, check_is_user_exists
 from .security import verify_password, get_password_hash, create_access_token
-from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES
+from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
 
 
 auth_router = APIRouter()
@@ -43,7 +43,9 @@ async def login_for_access_token(response: Response,
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
-                        samesite='none', secure=True, httponly=False
+                        samesite='none',
+                        secure=IS_SECURE_COOKIE,
+                        httponly=True
                         )
 
     return user
