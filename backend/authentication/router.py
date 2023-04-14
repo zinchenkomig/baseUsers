@@ -5,14 +5,12 @@ from fastapi import APIRouter, Response, Depends, HTTPException, status
 # Used here just for swagger integrated login
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
-from backend.db_models import User
-from backend.dependencies import get_async_session
-from backend.json_schemes import UserCreate, UserRead
-
+from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
+from db_models import User
+from dependencies import get_async_session
+from json_schemes import UserCreate, UserRead
 from .crud import get_user, check_is_user_exists
 from .security import verify_password, get_password_hash, create_access_token
-from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
-
 
 auth_router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
