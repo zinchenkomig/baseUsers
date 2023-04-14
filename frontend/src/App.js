@@ -3,7 +3,7 @@ import ErrorPage from "./error_page";
 import Login from "./login/login";
 import SignUp from "./signup/signup";
 import AuthContext from "./context/auth";
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import RequireAuth from "./components/RequireAuth";
 import axios from "./api/backend";
 
@@ -42,20 +42,7 @@ const router = createBrowserRouter([
 //             ? "nav-link pending"
 //             : "nav-link"
 
-
 export default function App(){
-
-    const { userInfo, setUserInfo } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (!userInfo.username){
-            console.log('Getting this shit');
-            console.log(localStorage.getItem('username'));
-            setUserInfo({username: localStorage.getItem('username')});
-        } else{
-            console.log(userInfo);
-        }
-    }, [])
 
     return (
             <RouterProvider router={router}/>
@@ -88,8 +75,6 @@ function Root() {
   );
 }
 
-
-
 function Profile(){
     const {userInfo, setUserInfo} = useContext(AuthContext);
 
@@ -106,5 +91,3 @@ function Profile(){
         </div>
     )
 }
-
-
