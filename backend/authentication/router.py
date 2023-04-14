@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
 from db_models import User
-from dependencies import get_async_session
+from dependencies import AsyncSessionDep
 from json_schemes import UserCreate, UserRead
 from .crud import get_user, check_is_user_exists
 from .security import verify_password, get_password_hash, create_access_token
@@ -27,7 +27,7 @@ async def authenticate_user(async_session, username: str, password: str) -> Unio
 
 @auth_router.post("/token", response_model=UserRead)
 async def login_for_access_token(response: Response,
-                                 async_session=Depends(get_async_session),
+                                 async_session: AsyncSessionDep,
                                  form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(async_session, form_data.username, form_data.password)
     if not user:
@@ -50,8 +50,7 @@ async def login_for_access_token(response: Response,
 
 
 @auth_router.post('/logout')
-async def logout(response: Response,
-                 ):
+async def logout(response: Response):
     """
     Removes JWT token from http_only cookie
     :param response:
@@ -62,7 +61,7 @@ async def logout(response: Response,
 
 @auth_router.post('/register')
 async def register(user_create: UserCreate, response: Response,
-                   async_session=Depends(get_async_session)):
+                   async_session: AsyncSessionDep):
     """
     Registers a user
     :param response:
