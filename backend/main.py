@@ -4,7 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from authentication.crud import get_user
 from authentication.dependencies import get_current_user
 from authentication.router import auth_router
-from dependencies import get_async_session
+from dependencies import AsyncSessionDep
 
 app = FastAPI(title='BaseUsers', version='0.1.1')
 
@@ -29,6 +29,6 @@ async def get_email(user=Depends(get_current_user)):
 
 
 @app.get('/check/username')
-async def check_username(username: str, async_session=Depends(get_async_session)):
+async def check_username(username: str, async_session: AsyncSessionDep):
     user = await get_user(async_session, username=username)
     return user is not None

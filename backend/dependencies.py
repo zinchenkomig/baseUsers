@@ -1,4 +1,10 @@
-from utils.db_connection import AsyncMainSession, SyncMainSession
+from typing import Annotated
+
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from utils.db_connection import AsyncMainSession
+from utils.db_connection_sync import SyncMainSession
 
 
 async def get_async_session():
@@ -16,3 +22,6 @@ def get_sync_session():
         yield session
     finally:
         session.close()
+
+
+AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_session)]
