@@ -9,7 +9,8 @@ from db_models import Base
 from sqlalchemy import create_engine
 
 from main import app
-from utils.db_connection import get_sync_connection_string, get_connection_string
+from utils.db_connection import get_connection_string
+from utils.db_connection_sync import get_sync_connection_string
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 
@@ -58,9 +59,7 @@ def mocked_connection() -> str:
 def clear_db_before_usage(mocked_connection):
     db_connection_string = mocked_connection
     if database_exists(db_connection_string):
-        print(f'Drop database: {db_connection_string}')
         drop_database(db_connection_string)
-    print('create db')
     create_database(db_connection_string)
     test_engine = create_engine(db_connection_string)
     Base.metadata.create_all(test_engine)
