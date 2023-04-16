@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+:root{
+    --white-text: #b6c2d9;
+    --dark-bg: #272932;
+    --visited-link: #9E90A2;
+    --link: #828489;
+    --hovered: #2D2F3AFF;
+    --input: #363946;
+    --input-focused: #494e5e;
+    --warning: #cc3300;
+}
+
+a:visited{
+    color: var(--visited-link);
+}
+
+a{
+    color: var(--link);
+}
+
+nav{
+    display: flex;
+}
+
+body{
+    background-color: var(--dark-bg);
+    color: var(--white-text);
+    font-size: 20px;
+    font-family: 'Quicksand', sans-serif;
+    margin: 0;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+}
+
+input{
+    background-color: var(--input);
+    border-radius: 4px;
+    border: none;
+    font-size: 20px;
+    padding: 0 12px;
+    min-height: 40px;
+    color: var(--link)
+}
+
+input:focus{
+    /*background-color: #9E90A2;*/
+    outline: var(--input-focused) solid;
+}
+
+button{
+    padding: 1rem;
+    background-color: var(--visited-link);
+    border: none;
+    font-size: 18px;
+    color: var(--dark-bg);
+    cursor: pointer;
+    width: 232px;
+}
+
+.nav-link{
+    padding: 1rem 2rem;
+}
+
+.nav-link:hover{
+    background-color: var(--hovered);
+}
+
+.main-content{
+    margin: 80px 80px 30px;
+}
+
+.input-field{
+    margin-bottom: 24px;
+}
+
+.input-warning{
+    color: var(--warning);
+    padding-left: 0.3rem;
+}
