@@ -1,4 +1,3 @@
-import './style.css'
 import axios from "../api/backend";
 import { useForm } from "react-hook-form";
 import {Link} from "react-router-dom";
@@ -19,22 +18,27 @@ export default function Login(){
         dataForm.append('password', data['password']);
         await axios.post('/auth/token', dataForm)
             .then((response) => {
-                console.log(response);
                 if (response.status === 200) {
                     localStorage.setItem('username', response.data.username);
-                    console.log('Localstorage check: ', localStorage.getItem('username'));
                     flushSync(() => {
                         setUserInfo({username: response.data.username})
                     });
                     navigate('/profile');
                 }
             }).catch((error)=>{
-                if (error.response.status === 401){
-                    setError("password", {type: "focus", message: "Invalid credentials"})
+                if (error.message === "Network Error"){
+                    setError("password", {type: "custom", message: "Server is not available"})
                 }
-                if (error.response.status === 500){
-                    setError("password", {type: "custom", message: "Server is not responding. " +
-                            "Try again later"})
+                else {
+                    if (error.response.status === 401) {
+                        setError("password", {type: "focus", message: "Invalid credentials"})
+                    }
+                    if (error.response.status === 500) {
+                        setError("password", {
+                            type: "custom", message: "Server is not responding. " +
+                                "Try again later"
+                        })
+                    }
                 }
             }
             );
@@ -42,32 +46,34 @@ export default function Login(){
 
 
     return (
-        <div className="row justify-content-center">
-            <div className="col-lg-3 col-sm-6">
+        <div>
             <h3>Login</h3>
                 <form method="post" onSubmit={handleSubmit(onSubmit)}>
-                <input
-                    placeholder="Username"
-                    className="form-control"
-                    {...register("username", {
-                        required: "This field is required"
-                    })}
-                />
-                    {errors.username && <p className="warning">{errors.username.message}</p>}
-
+                    <div className="input-field">
+                        <div>Username</div>
+                        <input
+                            id="username"
+                            {...register("username", {
+                                required: "This field is required"
+                            })}
+                        />
+                            {errors.username && <div className="input-warning">{errors.username.message}</div>}
+                    </div>
+                    <div className="input-field">
+                    <div>Password</div>
                     <input
-                    placeholder="Password"
                     type="password"
-                    className="form-control"
                     {...register("password", {
                         required: "This field is required"
                     })}
                 />
-                    {errors.password && <p className="warning">{errors.password.message}</p>}
-                    <button className="btn btn-primary" type="submit">Login</button>
+                    {errors.password && <div className="input-warning">{errors.password.message}</div>}
+                    </div>
+                    <div>
+                        <button type="submit">Login</button>
+                    </div>
                 </form>
                 <Link to={`/signup`}>Sign Up</Link>
-        </div>
         </div>
     )
 }
