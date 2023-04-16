@@ -1,16 +1,4 @@
-from main import app
-from httpx import AsyncClient
-from fastapi.testclient import TestClient
 import pytest
-import os
-import pytest
-import os
-from sqlalchemy_utils import drop_database, database_exists, create_database
-from db_models import Base
-from sqlalchemy import create_engine
-from utils.db_connection import get_sync_connection_string, get_connection_string
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-import dependencies
 
 
 @pytest.mark.anyio
