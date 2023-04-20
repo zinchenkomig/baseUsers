@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from conf.consts import ALGORITHM
 from conf.secrets import PASSWORD_ENCODING_SECRET
 from dependencies import AsyncSessionDep
-from .crud import get_user
+from . import crud
 
 apikey_cookie_getter = APIKeyCookie(name='login_token')
 
@@ -23,7 +23,7 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = await get_user(async_session, username=username)
+    user = await crud.get_user(async_session, username=username)
     if user is None:
         raise credentials_exception
     return user
