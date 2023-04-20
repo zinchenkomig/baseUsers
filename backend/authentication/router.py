@@ -9,7 +9,7 @@ from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
 from db_models import User
 from dependencies import AsyncSessionDep
 from json_schemes import UserCreate, UserRead
-from .crud import get_user, check_is_user_exists
+from . import crud
 from .security import verify_password, get_password_hash, create_access_token
 
 auth_router = APIRouter()
@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 async def authenticate_user(async_session, username: str, password: str) -> Union[User, bool]:
-    user = await get_user(async_session, username)
+    user = await crud.get_user(async_session, username)
     if user is None:
         return False
     if not verify_password(password, user.password):
@@ -69,7 +69,7 @@ async def register(user_create: UserCreate, response: Response,
     :param async_session:
     :return:
     """
-    if await check_is_user_exists(async_session, user_create):
+    if await crud.check_is_user_exists(async_session, user_create):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
     else:
         hashed_pass = get_password_hash(user_create.password)

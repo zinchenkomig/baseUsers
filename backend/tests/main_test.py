@@ -18,4 +18,3 @@ async def test_auth(async_client):
     assert response_user_data.status_code == 200, response_user_data.text
     assert response_user_data.json() == test_email
 
-
