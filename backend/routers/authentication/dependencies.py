@@ -6,11 +6,12 @@ from conf.consts import ALGORITHM
 from conf.secrets import PASSWORD_ENCODING_SECRET
 from dependencies import AsyncSessionDep
 from . import crud
+import db_models as db
 
 apikey_cookie_getter = APIKeyCookie(name='login_token')
 
 
-async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_cookie_getter)):
+async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_cookie_getter)) -> db.User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -18,6 +19,7 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
     )
     try:
         payload = jwt.decode(token, PASSWORD_ENCODING_SECRET, algorithms=[ALGORITHM])
+        print(payload)
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception

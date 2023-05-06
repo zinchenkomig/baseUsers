@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
-from authentication.crud import get_user
-from authentication.dependencies import get_current_user
-from authentication.router import auth_router
+from routers.authentication.crud import get_user
+from routers.authentication.dependencies import get_current_user
+from routers.authentication.router import auth_router
+from routers.superuser.router import superuser_router
+
 from dependencies import AsyncSessionDep
 
 app = FastAPI(title='BaseUsers', version='0.1.1')
@@ -21,6 +23,10 @@ app.include_router(router=auth_router,
                    prefix='/auth',
                    tags=['auth']
                    )
+
+app.include_router(router=superuser_router,
+                   prefix='/superuser',
+                   tags=['superuser'])
 
 
 @app.get('/email')
