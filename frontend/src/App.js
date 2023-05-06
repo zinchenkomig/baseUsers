@@ -1,13 +1,15 @@
 import {createBrowserRouter, Link, Outlet, RouterProvider} from "react-router-dom";
-import ErrorPage from "./error_page";
-import Login from "./login/login";
-import SignUp from "./signup/signup";
-import AuthContext from "./context/auth";
-import {useContext} from "react";
+import ErrorPage from "./pages/ErrorPage";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import RequireAuth from "./components/RequireAuth";
-import axios from "./api/backend";
 import { FaUser } from "react-icons/fa"
-import "./style.css"
+import "./assets/style.css"
+import Profile from "./pages/Profile";
+import RequireSuperuser from "./components/RequireSuperuser";
+import UserManagement from "./pages/UsersManagement";
+import {useContext} from "react";
+import AuthContext from "./context/auth";
 
 
 const router = createBrowserRouter([
@@ -23,6 +25,15 @@ const router = createBrowserRouter([
                         path: "profile",
                         element: <Profile/>,
                     },
+                ]
+            },
+            {
+                element: <RequireSuperuser/>,
+                children: [
+                    {
+                        path: "manage/users",
+                        element: <UserManagement/>,
+                    }
                 ]
             },
             {
@@ -43,21 +54,20 @@ export default function App(){
             <RouterProvider router={router}/>
     )
 }
-function NLink({to, children}) {
-    return (
-        <Link className="nav-link" to={to}>
-            {children}
-        </Link>
 
-    )
-}
 
 function Root() {
+    const { userInfo } = useContext(AuthContext);
+
   return (
       <div>
       <nav>
-          <NLink to={`/`}>Home</NLink>
-          <NLink to={`/profile`}><FaUser/></NLink>
+          <Link className="nav-link" to={`/`}>Home</Link>
+          {userInfo?.scope === 'superuser'
+              ? <Link className="nav-link" to={`/manage/users`}>Manage</Link>
+              : <></>
+          }
+          <Link className="nav-link" to={`/profile`}><FaUser/></Link>
       </nav>
           <div className="main-content">
               <Outlet/>
@@ -67,21 +77,3 @@ function Root() {
   );
 }
 
-function Profile(){
-    const {userInfo, setUserInfo} = useContext(AuthContext);
-
-    async function onLogoutClick(){
-        await axios.post('/auth/logout');
-        localStorage.removeItem('username');
-        setUserInfo({});
-    }
-
-    return(
-        <div>
-            <div>
-                Profile info: {userInfo?.username}
-            </div>
-            <button onClick={onLogoutClick}>Logout</button>
-        </div>
-    )
-}

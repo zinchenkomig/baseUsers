@@ -42,10 +42,10 @@ export default function SignUp(){
     return (
         <div>
             <h3>Sign Up Form</h3>
-                <form method="post" onSubmit={handleSubmit(onSubmit)}>
-                    <div className="input-field">
-                        <div>Username</div>
-                        <input
+            <form method="post" onSubmit={handleSubmit(onSubmit)}>
+                <div className="input-field">
+                    <div>Username</div>
+                    <input
                         className="form-control"
                         {...register("username", {
                             required: "This field is required",
@@ -55,26 +55,26 @@ export default function SignUp(){
                             },
                             validate: validate_username
                         })}
-                         />
-                        {errors.username && <div className="input-warning">{errors.username.message}</div>}
-                    </div>
-                    <div className="input-field">
-                        <div>E-Mail</div>
-                        <input
+                    />
+                    {errors.username && <div className="input-warning">{errors.username.message}</div>}
+                </div>
+                <div className="input-field">
+                    <div>E-Mail</div>
+                    <input
                         className="form-control"
                         type="email"
                         {...register("email", {
                             pattern: {
                                 value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
                                 message: 'Invalid email format'
-                        }
+                            }
                         })}
-                         />
-                        {errors.email && <div className="input-warning">{errors.email.message}</div>}
-                    </div>
-                    <div className="input-field">
-                        <div>Password</div>
-                        <input
+                    />
+                    {errors.email && <div className="input-warning">{errors.email.message}</div>}
+                </div>
+                <div className="input-field">
+                    <div>Password</div>
+                    <input
                         type="password"
                         className="form-control"
                         {...register("password", {
@@ -84,27 +84,27 @@ export default function SignUp(){
                                 message: "Minimum password length is 6"
                             }
                         })}
-                        />
-                        {errors.password && <div className="input-warning">{errors.password.message}</div>}
-                    </div>
-                    <div className="input-field">
-                        <div>Repeat password</div>
-                        <input
-                            type="password"
-                            className="form-control"
-                            {...register("repeat_password", {
-                                validate: (value) => {
-                                    if (watch('password') !== value) {
-                                        return "Your passwords do not match";
-                                    }
+                    />
+                    {errors.password && <div className="input-warning">{errors.password.message}</div>}
+                </div>
+                <div className="input-field">
+                    <div>Repeat password</div>
+                    <input
+                        type="password"
+                        className="form-control"
+                        {...register("repeat_password", {
+                            validate: (value) => {
+                                if (watch('password') !== value) {
+                                    return "Your passwords do not match";
                                 }
-                            })}
-                        />
-                        {errors.repeat_password && <div className="input-warning">{errors.repeat_password.message}</div>}
-                    </div>
+                            }
+                        })}
+                    />
+                    {errors.repeat_password && <div className="input-warning">{errors.repeat_password.message}</div>}
+                </div>
                 <button className="btn btn-primary" type="submit">Submit</button>
-                    {submitError && <div className="input-warning">{submitError}</div>}
-                </form>
+                {submitError && <div className="input-warning">{submitError}</div>}
+            </form>
         </div>
     )
 }
