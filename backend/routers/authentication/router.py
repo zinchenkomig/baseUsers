@@ -2,10 +2,9 @@ from datetime import timedelta
 from typing import Union
 
 from fastapi import APIRouter, Response, Depends, HTTPException, status
-# Used here just for swagger integrated login
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordRequestForm
 
-from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE
+from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE, SAME_SITE
 from db_models import User
 from dependencies import AsyncSessionDep
 from json_schemes import UserCreate, UserRead
@@ -13,7 +12,6 @@ from . import crud
 from .security import verify_password, get_password_hash, create_access_token
 
 auth_router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 async def authenticate_user(async_session, username: str, password: str) -> Union[User, bool]:
@@ -41,7 +39,7 @@ async def login_for_access_token(response: Response,
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
-                        samesite='none',
+                        samesite=SAME_SITE,
                         secure=IS_SECURE_COOKIE,
                         httponly=True
                         )
@@ -56,7 +54,8 @@ async def logout(response: Response):
     :param response:
     :return:
     """
-    response.set_cookie('login_token', value='', httponly=True, samesite='lax', secure=True)
+    response.set_cookie('login_token', value='', httponly=True,
+                        samesite=SAME_SITE, secure=IS_SECURE_COOKIE)
 
 
 @auth_router.post('/register')

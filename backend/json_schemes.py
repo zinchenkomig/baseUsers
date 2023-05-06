@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+import uuid
 
 
 class BaseORM(BaseModel):
@@ -14,7 +15,13 @@ class UserCreate(BaseModel):
 
 
 class UserRead(BaseORM):
+    id: uuid.UUID
     username: str
     email: str
+    is_superuser: bool
 
+
+class UserUpdate(BaseModel):
+    username: str
+    email: str
 
