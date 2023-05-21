@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 from typing import Union
 from jose import jwt
 from passlib.context import CryptContext
-from backend.conf.secrets import PASSWORD_ENCODING_SECRET
-from backend.conf.consts import ALGORITHM
+from conf.secrets import PASSWORD_ENCODING_SECRET
+from conf.consts import ALGORITHM
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

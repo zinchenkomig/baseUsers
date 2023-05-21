@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from backend.db_models import User
+from db_models import User
 from typing import Optional
 
 

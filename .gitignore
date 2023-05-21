@@ -1,1 +1,12 @@
 /.idea
+/frontend/.idea
+*env-file
+*__pycache__
+*node_modules
+# Default ignored files
+/frontend/shelf/
+/frontend/workspace.xml
+# Editor-based HTTP Client requests
+/frontend/httpRequests/
+*sandbox*
+
