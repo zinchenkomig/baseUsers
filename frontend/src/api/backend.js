@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backend_base = "http://127.0.0.1:8000"
+const backend_base = process.env.REACT_APP_BACKEND_URL
 
 
 export default axios.create({
