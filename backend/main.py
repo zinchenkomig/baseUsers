@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
@@ -13,7 +15,7 @@ app = FastAPI(title='BaseUsers', version='0.1.1')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:3000'],
+    allow_origins=[os.environ.get('BASE_USERS_FRONTEND_URL')],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
