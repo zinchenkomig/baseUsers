@@ -4,7 +4,7 @@ from typing import Union
 from fastapi import APIRouter, Response, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from conf.consts import ACCESS_TOKEN_EXPIRE_MINUTES, IS_SECURE_COOKIE, SAME_SITE
+from conf import settings
 from db_models import User
 from dependencies import AsyncSessionDep
 from json_schemes import UserCreate, UserRead
@@ -34,13 +34,13 @@ async def login_for_access_token(response: Response,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
-                        samesite=SAME_SITE,
-                        secure=IS_SECURE_COOKIE,
+                        samesite=settings.SAME_SITE,
+                        secure=settings.IS_SECURE_COOKIE,
                         httponly=True
                         )
 
@@ -55,7 +55,7 @@ async def logout(response: Response):
     :return:
     """
     response.set_cookie('login_token', value='', httponly=True,
-                        samesite=SAME_SITE, secure=IS_SECURE_COOKIE)
+                        samesite=settings.SAME_SITE, secure=settings.IS_SECURE_COOKIE)
 
 
 @auth_router.post('/register')

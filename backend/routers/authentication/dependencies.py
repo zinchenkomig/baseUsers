@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
 from jose import jwt, JWTError
 
-from conf.consts import ALGORITHM
+from conf import settings
 from conf.secrets import PASSWORD_ENCODING_SECRET
 from dependencies import AsyncSessionDep
 from . import crud
@@ -18,7 +18,7 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, PASSWORD_ENCODING_SECRET, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, PASSWORD_ENCODING_SECRET, algorithms=[settings.ALGORITHM])
         print(payload)
         username: str = payload.get("sub")
         if username is None:
