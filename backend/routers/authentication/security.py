@@ -3,7 +3,7 @@ from typing import Union
 from jose import jwt
 from passlib.context import CryptContext
 from conf.secrets import PASSWORD_ENCODING_SECRET
-from conf.consts import ALGORITHM
+from conf import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -15,7 +15,7 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, PASSWORD_ENCODING_SECRET, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, PASSWORD_ENCODING_SECRET, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
