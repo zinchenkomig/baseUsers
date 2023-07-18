@@ -1,0 +1,25 @@
+
+name: Deployment
+
+on:
+  push:
+    branches: [ "master" ]
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - name: server
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.HOST_KEY }}
+            command_timeout: 15m
+            script: |
+              cd baseUsers
+              git pull
+              cd backend
+              docker build --platform linux/amd64 . -t base_users_backend
+              docker ps -q | xargs -r docker rm -f || true
+              docker run -d -p 0.0.0.0:8000:8000 --rm --env-file=env-file --name baseusers base_users_backend
