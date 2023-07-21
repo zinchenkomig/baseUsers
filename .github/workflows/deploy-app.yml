@@ -23,3 +23,6 @@ jobs:
             docker build --platform linux/amd64 . -t base_users_backend
             docker ps -q | xargs -r docker rm -f || true
             docker run -d -p 0.0.0.0:8000:8000 --rm --env-file=env-file --name baseusers base_users_backend
+            cd /var/www/html/baseUsers/frontend
+            git pull
+            npm run build
