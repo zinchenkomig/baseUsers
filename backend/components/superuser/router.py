@@ -1,14 +1,13 @@
 from typing import List
 
 import sqlalchemy.exc
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status
 
 import json_schemes
 from dependencies import AsyncSessionDep
-from .dependencies import get_current_superuser
 from json_schemes import UserRead
 from . import crud
-import db_models as db
+from .dependencies import get_current_superuser
 
 # Used here just for swagger integrated login
 

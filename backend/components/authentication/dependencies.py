@@ -1,6 +1,8 @@
+from typing import Annotated
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 
 from conf import settings
 from conf.secrets import PASSWORD_ENCODING_SECRET
@@ -21,6 +23,12 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
                 detail="Could not get user from jwt",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Token signature expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     except JWTError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,3 +43,6 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+CurrentUserDep = Annotated[db.User, Depends(get_current_user)]
+
