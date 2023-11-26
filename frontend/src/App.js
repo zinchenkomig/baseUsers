@@ -3,13 +3,13 @@ import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import RequireAuth from "./components/RequireAuth";
-import { FaUser } from "react-icons/fa"
 import "./assets/style.css"
 import Profile from "./pages/Profile";
 import RequireSuperuser from "./components/RequireSuperuser";
 import UserManagement from "./pages/UsersManagement";
 import {useContext} from "react";
 import AuthContext from "./context/auth";
+import ProfileDropDown from "./components/ProfileDropDown";
 
 
 const router = createBrowserRouter([
@@ -59,15 +59,21 @@ export default function App(){
 function Root() {
     const { userInfo } = useContext(AuthContext);
 
+
   return (
       <div>
       <nav>
           <Link className="nav-link" to={`/`}>Home</Link>
+
           {userInfo?.scope === 'superuser'
               ? <Link className="nav-link" to={`/manage/users`}>Manage</Link>
               : <></>
           }
-          <Link className="nav-link" to={`/profile`}><FaUser/></Link>
+
+          <div className="right-align">
+                      <ProfileDropDown/>
+          </div>
+
       </nav>
           <div className="main-content">
               <Outlet/>

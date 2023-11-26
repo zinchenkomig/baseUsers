@@ -1,22 +1,32 @@
+// import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import {useContext} from "react";
 import AuthContext from "../context/auth";
-import axios from "../api/backend";
+// import axios from "../api/backend";
 
 export default function Profile(){
-    const {userInfo, setUserInfo} = useContext(AuthContext);
+    const {userInfo} = useContext(AuthContext);
 
-    async function onLogoutClick(){
-        await axios.post('/auth/logout');
-        localStorage.removeItem('username');
-        setUserInfo({});
-    }
+    // const userQuery = useQuery({queryKey: ["user"],
+    //         queryFn: () => axios.get('/user/info')
+    //             .then((response) => {console.log(response.data);
+    //                 return response.data;})
+    //     }
+    // )
 
     return(
-        <div>
-            <div>
-                Profile info: {userInfo?.username}
+        <div className="profile-container">
+            <div className="profile-field">
+                Name: {userInfo?.username}
             </div>
-            <button onClick={onLogoutClick}>Logout</button>
+            <div className="profile-field">
+                Email: {userInfo?.username}
+            </div>
+            {/*<div className="profile-field">*/}
+            {/*    Description: {userQuery.isFetched ? userQuery.data['description']: 'Loading'}*/}
+            {/*</div>*/}
+            <div className="profile-field">
+                <button>Change Password</button>
+            </div>
         </div>
     )
 }

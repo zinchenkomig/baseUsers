@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
-:root {
+@import (css) url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+:root{
   --white-text: #b6c2d9;
   --dark-bg: #272932;
   --visited-link: #9E90A2;
@@ -11,41 +12,49 @@
   --input-focused: #494e5e;
   --warning: #cc3300;
 }
-a:visited {
+
+a:visited{
   color: var(--visited-link);
 }
-a {
+
+a{
   color: var(--link);
 }
-nav {
+
+nav{
   display: flex;
   width: 100%;
 }
-body {
+
+body{
   background-color: var(--dark-bg);
   color: var(--white-text);
   font-size: 20px;
   font-family: 'Quicksand', sans-serif;
   margin: 0;
 }
-form {
+
+form{
   display: flex;
   flex-direction: column;
 }
-input {
+
+input{
   background-color: var(--input);
   border-radius: 4px;
   border: none;
   font-size: 20px;
   padding: 0 12px;
   min-height: 40px;
-  color: var(--link);
+  color: var(--link)
 }
-input:focus {
+
+input:focus{
   /*background-color: #9E90A2;*/
   outline: var(--input-focused) solid;
 }
-button {
+
+button{
   padding: 1rem;
   background-color: var(--visited-link);
   border: none;
@@ -54,62 +63,76 @@ button {
   cursor: pointer;
   width: 232px;
 }
-.nav-link {
+
+.nav-link{
   padding: 1rem 2rem;
   color: var(--visited-link);
 }
-.nav-link:hover {
+
+.nav-link:hover{
   background-color: var(--hovered);
 }
+
 .nav-link-toggled {
-  padding: 1rem 2rem;
-  color: var(--visited-link);
+  .nav-link;
   background-color: var(--hovered);
 }
-.main-content {
+
+.main-content{
   margin: 80px 80px 30px;
 }
-.input-field {
+
+.input-field{
   margin-bottom: 24px;
 }
-.input-warning {
+
+.input-warning{
   color: var(--warning);
   padding-left: 0.3rem;
 }
-.users-table {
+
+.users-table{
   border: var(--visited-link);
   border-radius: 1px;
   display: flex;
   flex-direction: column;
 }
-.user-record-container {
+
+.user-record-container{
   background-color: var(--text-container);
   margin-bottom: 0.7rem;
   padding: 0.8rem;
   position: relative;
 }
-.profile-container {
+
+.profile-container{
   background-color: var(--text-container);
   margin-bottom: 2rem;
   padding: 2rem;
 }
-.profile-field {
+
+.profile-field{
   margin-bottom: 2rem;
 }
-.right-align {
+
+.right-align{
   position: absolute;
   right: 0;
 }
-.dropdown-profile-container {
+
+.dropdown-profile-container{
   position: relative;
 }
-.profile-dropdown-link {
+
+.profile-dropdown-link{
   color: var(--link);
 }
-.profile-dropdown-link:visited {
+
+.profile-dropdown-link:visited{
   color: var(--link);
 }
-.profile-dropdown {
+
+.profile-dropdown{
   background-color: var(--profile-container);
   position: absolute;
   top: 70px;
@@ -117,13 +140,16 @@ button {
   z-index: 10;
   border: solid var(--dark-bg) 2px;
   border-radius: 14px;
+
 }
-.profile-dropdown ul {
+
+.profile-dropdown ul{
   list-style-type: none;
   padding: 0 1rem;
   margin: 1rem;
 }
-.profile-dropdown-name {
+
+.profile-dropdown-name{
   padding-block: 10px;
   font-size: 24px;
   position: relative;
@@ -131,27 +157,33 @@ button {
   border-bottom: solid var(--dark-bg) 2px;
   text-align: center;
 }
-.profile-dropdown-body {
+
+.profile-dropdown-body{
   padding: 20px;
 }
-.profile-icon {
+
+.profile-icon{
   position: relative;
   right: 0;
   width: 1rem;
 }
-.disabled {
+
+.disabled{
   pointer-events: none;
 }
-.user-record {
+
+.user-record{
   display: grid;
   grid-template-columns: 2fr 2fr 5fr;
   align-items: center;
 }
-.user-record-button {
+
+.user-record-button{
   display: flex;
   justify-content: flex-end;
 }
-button.no-bg-button {
+
+button.no-bg-button{
   border: none;
   background: none;
   color: var(--link);
@@ -159,17 +191,21 @@ button.no-bg-button {
   width: auto;
   padding: 1rem;
 }
-button.no-bg-button:hover {
+
+button.no-bg-button:hover{
   background: rgba(255, 255, 255, 0.03);
 }
-button.no-bg-button:disabled {
+
+button.no-bg-button:disabled{
   color: var(--input-focused);
   cursor: not-allowed;
 }
-button.no-bg-button:disabled:hover {
+
+button.no-bg-button:disabled:hover{
   background: none;
 }
-.in-record-input {
+
+.in-record-input{
   background: rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   width: 95%;
@@ -179,16 +215,17 @@ button.no-bg-button:disabled:hover {
   padding-left: 15px;
   color: var(--white-text);
 }
-.in-record-input::placeholder {
+
+.in-record-input::placeholder{
   color: var(--white-text);
 }
-.fader {
+
+.fader{
   position: absolute;
   background-color: rgba(45, 45, 45, 0.3);
   z-index: 1000;
-  top: 0;
-  left: 0;
+  top:0;
+  left:0;
   right: 0;
   bottom: 0;
 }
-/*# sourceMappingURL=style.css.map */
