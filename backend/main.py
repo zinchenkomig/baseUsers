@@ -3,10 +3,11 @@ import os
 from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
-from routers.authentication.crud import get_user
-from routers.authentication.dependencies import get_current_user
-from routers.authentication.router import auth_router
-from routers.superuser.router import superuser_router
+from components.authentication.crud import get_user
+from components.authentication.dependencies import CurrentUserDep
+from components.authentication.router import auth_router
+from components.superuser.router import superuser_router
+from components.user.router import user_router
 
 from dependencies import AsyncSessionDep
 
@@ -30,9 +31,13 @@ app.include_router(router=superuser_router,
                    prefix='/superuser',
                    tags=['superuser'])
 
+app.include_router(router=user_router,
+                   prefix='/user',
+                   tags=['user'])
+
 
 @app.get('/email')
-async def get_email(user=Depends(get_current_user)):
+async def get_email(user: CurrentUserDep):
     return user.email
 
 
