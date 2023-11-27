@@ -1,6 +1,12 @@
 import os
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from starlette.middleware.cors import CORSMiddleware
 
 from components.authentication.crud import get_user
@@ -8,11 +14,11 @@ from components.authentication.dependencies import CurrentUserDep
 from components.authentication.router import auth_router
 from components.superuser.router import superuser_router
 from components.user.router import user_router
-
 from dependencies import AsyncSessionDep
 
-app = FastAPI(title='BaseUsers', version='0.1.1')
+from conf import settings
 
+app = FastAPI(title=settings.APP_NAME, version='0.1.1')
 
 app.add_middleware(
     CORSMiddleware,
@@ -45,3 +51,16 @@ async def get_email(user: CurrentUserDep):
 async def check_username(username: str, async_session: AsyncSessionDep):
     user = await get_user(async_session, username=username)
     return user is not None
+
+
+# Service name is required for most backends
+resource = Resource(attributes={
+    SERVICE_NAME: settings.APP_NAME
+})
+
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(OTLPSpanExporter(endpoint=settings.JAEGER_BACKEND, insecure=True))
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+
+FastAPIInstrumentor.instrument_app(app)
