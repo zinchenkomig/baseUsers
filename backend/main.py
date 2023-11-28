@@ -15,6 +15,7 @@ from components.authentication.router import auth_router
 from components.superuser.router import superuser_router
 from components.user.router import user_router
 from dependencies import AsyncSessionDep
+from starlette_exporter import PrometheusMiddleware, handle_metrics
 
 from conf import settings
 
@@ -28,6 +29,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(PrometheusMiddleware,
+                   group_paths=True,
+                   filter_unhandled_paths=True,
+                   app_name=settings.APP_NAME)
+
+
 app.include_router(router=auth_router,
                    prefix='/auth',
                    tags=['auth']
@@ -40,6 +47,8 @@ app.include_router(router=superuser_router,
 app.include_router(router=user_router,
                    prefix='/user',
                    tags=['user'])
+
+app.add_route("/metrics", handle_metrics)
 
 
 @app.get('/email')
