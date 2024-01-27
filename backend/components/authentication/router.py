@@ -111,7 +111,7 @@ async def register(user_create: UserCreate, response: Response,
                     email=user_create.email,
                     password=hashed_pass,
                     is_active=True,
-                    origin=enums.UserOrigin.Internal)
+                    origin=enums.UserOrigin.Internal.value)
         await crud.new_user(async_session, user)
         await async_session.commit()
         response.status_code = status.HTTP_201_CREATED
