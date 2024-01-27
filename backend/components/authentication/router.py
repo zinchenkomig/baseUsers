@@ -51,7 +51,6 @@ async def login_for_access_token(response: Response,
 
 @auth_router.post("/tg/login", response_model=UserReadTg)
 async def auth_tg(response: Response, async_session: AsyncSessionDep, request: Dict[Any, Any]):
-    print(request)
     if not is_tg_hash_valid(request, tg_secret_token):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
