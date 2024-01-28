@@ -1,3 +1,6 @@
+import hashlib
+import hmac
+from copy import copy
 from datetime import datetime, timedelta
 from typing import Union
 from jose import jwt
@@ -25,3 +28,18 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+
+def get_data_string(data: dict):
+    sorted_data = sorted(data.items(), key=lambda x: x[0])
+    sorted_data_str = '\n'.join([f'{key}={val}' for key, val in sorted_data])
+    return sorted_data_str
+
+
+def is_tg_hash_valid(data: dict, tg_bot_token: str):
+    d = copy(data)
+    data_hash = d.pop('hash')
+    data_str = get_data_string(d)
+    secret_hashed = hashlib.sha256(tg_bot_token.encode())
+    one = hmac.new(key=secret_hashed.digest(), msg=data_str.encode(), digestmod='sha256')
+    return hmac.compare_digest(one.hexdigest(), data_hash)

@@ -6,6 +6,8 @@ db_user = os.getenv('BASE_USERS_DB_USER')
 db_password = os.getenv('BASE_USERS_DB_PASSWORD')
 db_name = os.getenv('BASE_USERS_DB_NAME')
 
+tg_secret_token = os.getenv('BASE_USERS_TG_TOKEN')
+
 PASSWORD_ENCODING_SECRET = os.environ['BASE_USERS_PASS_ENCODING_SECRET']
 # to get a string like this run:
 # openssl rand -hex 32

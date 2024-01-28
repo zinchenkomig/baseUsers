@@ -1,15 +1,17 @@
 from datetime import timedelta
-from typing import Union
+from typing import Union, Dict, Any
 
-from fastapi import APIRouter, Response, Depends, HTTPException, status
+from fastapi import APIRouter, Response, Depends, HTTPException, status, Request, Body
 from fastapi.security import OAuth2PasswordRequestForm
 
+import enums
 from conf import settings
+from conf.secrets import tg_secret_token
 from db_models import User
 from dependencies import AsyncSessionDep
-from json_schemes import UserCreate, UserRead
+from json_schemes import UserCreate, UserRead, UserReadTg
 from . import crud
-from .security import verify_password, get_password_hash, create_access_token
+from .security import verify_password, get_password_hash, create_access_token, is_tg_hash_valid
 
 auth_router = APIRouter()
 
@@ -47,6 +49,39 @@ async def login_for_access_token(response: Response,
     return user
 
 
+@auth_router.post("/tg/login", response_model=UserReadTg)
+async def auth_tg(response: Response, async_session: AsyncSessionDep, request: Dict[Any, Any]):
+    if not is_tg_hash_valid(request, tg_secret_token):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Failed tg token verification",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    username = request['username']
+    user = await crud.get_user(async_session, username, origin=enums.UserOrigin.TG)
+    if user is None:
+        user = User(username=username,
+                    origin=enums.UserOrigin.TG.value,
+                    email=None,
+                    password=None,
+                    is_active=True,
+                    photo_url=request['photo_url'],
+                    )
+        user = await crud.new_user(async_session, user)
+        await async_session.commit()
+        async_session.refresh(user)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": username}, expires_delta=access_token_expires
+    )
+    response.set_cookie(key='login_token', value=access_token,
+                        samesite=settings.SAME_SITE,
+                        secure=settings.IS_SECURE_COOKIE,
+                        httponly=True
+                        )
+    return user
+
+
 @auth_router.post('/logout')
 async def logout(response: Response):
     """
@@ -75,8 +110,8 @@ async def register(user_create: UserCreate, response: Response,
         user = User(username=user_create.username,
                     email=user_create.email,
                     password=hashed_pass,
-                    is_active=True)
-        async_session.add(user)
+                    is_active=True,
+                    origin=enums.UserOrigin.Internal.value)
+        await crud.new_user(async_session, user)
         await async_session.commit()
         response.status_code = status.HTTP_201_CREATED
-

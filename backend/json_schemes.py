@@ -21,6 +21,12 @@ class UserRead(BaseORM):
     is_superuser: bool
 
 
+class UserReadTg(BaseORM):
+    id: uuid.UUID
+    username: str
+    is_superuser: bool
+
+
 class UserUpdate(BaseModel):
     username: str
     email: str
