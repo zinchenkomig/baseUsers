@@ -17,7 +17,7 @@ auth_router = APIRouter()
 
 
 async def authenticate_user(async_session, username: str, password: str) -> Union[User, bool]:
-    user = await crud.get_user(async_session, username)
+    user = await crud.get_user(async_session, username, origin=enums.UserOrigin.Internal.value)
     if user is None:
         return False
     if not verify_password(password, user.password):
