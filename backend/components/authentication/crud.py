@@ -5,9 +5,9 @@ from db_models import User
 from typing import Optional
 
 
-async def get_user(async_session, username, origin: enums.UserOrigin = enums.UserOrigin.Internal) -> Optional[User]:
+async def get_user(async_session, username, origin: str) -> Optional[User]:
     user_query_exec = await async_session.execute(select(User).filter_by(username=username,
-                                                                         origin=origin.value).limit(1))
+                                                                         origin=origin).limit(1))
     user = user_query_exec.scalars().one_or_none()
     return user
 

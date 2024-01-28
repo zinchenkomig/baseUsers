@@ -17,6 +17,7 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
     try:
         payload = jwt.decode(token, PASSWORD_ENCODING_SECRET, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
+        user_origin: str = payload.get("user_origin")
         if username is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,7 +36,7 @@ async def get_current_user(async_session: AsyncSessionDep, token=Depends(apikey_
             detail=f"jwt error: {e}",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = await crud.get_user(async_session, username=username)
+    user = await crud.get_user(async_session, username=username, origin=user_origin)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

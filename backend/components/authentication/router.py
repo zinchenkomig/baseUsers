@@ -38,7 +38,9 @@ async def login_for_access_token(response: Response,
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": user.username,
+              "user_origin": enums.UserOrigin.Internal.value},
+        expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
                         samesite=settings.SAME_SITE,
@@ -58,7 +60,7 @@ async def auth_tg(response: Response, async_session: AsyncSessionDep, request: D
             headers={"WWW-Authenticate": "Bearer"},
         )
     username = request['username']
-    user = await crud.get_user(async_session, username, origin=enums.UserOrigin.TG)
+    user = await crud.get_user(async_session, username, origin=enums.UserOrigin.TG.value)
     if user is None:
         user = User(username=username,
                     origin=enums.UserOrigin.TG.value,
@@ -72,7 +74,9 @@ async def auth_tg(response: Response, async_session: AsyncSessionDep, request: D
         async_session.refresh(user)
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": username}, expires_delta=access_token_expires
+        data={"sub": username,
+              "user_origin": enums.UserOrigin.TG.value},
+        expires_delta=access_token_expires
     )
     response.set_cookie(key='login_token', value=access_token,
                         samesite=settings.SAME_SITE,
