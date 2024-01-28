@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 import uuid
 
@@ -17,7 +19,7 @@ class UserCreate(BaseModel):
 class UserRead(BaseORM):
     id: uuid.UUID
     username: str
-    email: str
+    email: Optional[str]
     is_superuser: bool
 
 
